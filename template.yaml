@@ -10,6 +10,9 @@ Globals:
   Function:
     Timeout: 20
     MemorySize: 512
+    Runtime: java17
+    Architectures:
+      - x86_64
 
 Resources:
   CreateOrderFunction:
@@ -17,12 +20,20 @@ Resources:
     Properties:
       CodeUri: lambda-order-apis
       Handler: com.zeero.lambda.apis.CreateOrderAgent::handleRequest
-      Runtime: java17
-      Architectures:
-        - x86_64
       Events:
         CreateOrderEvent:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /orders
             Method: POSt
+  ReadOrderFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambda-order-apis
+      Handler: com.zeero.lambda.apis.ReadOrderAgent::handleRequest
+      Events:
+        ReadeOrderEvent:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /orders
+            Method: GET
