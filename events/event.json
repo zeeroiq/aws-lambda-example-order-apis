@@ -4,9 +4,6 @@
     "path": "/order",
     "httpMethod": "POST",
     "isBase64Encoded": false,
-    "queryStringParameters": {
-      "foo": "bar"
-    },
     "pathParameters": {
       "proxy": "/order"
     },
