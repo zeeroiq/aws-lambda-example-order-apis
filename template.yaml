@@ -13,8 +13,8 @@ Globals:
     Runtime: java17
     Environment:
       Variables:
-#        ORDER_TABLE: !Ref OrderTable
-        ORDER_TABLE: { "Ref" : "OrderTable" }
+        #        ORDER_TABLE: !Ref OrderTable
+        ORDER_TABLE: { "Ref": "OrderTable" }
     Architectures:
       - x86_64
 
@@ -32,7 +32,7 @@ Resources:
       Handler: com.zeero.lambda.apis.CreateOrderAgent::handleRequest
       Policies:
         - DynamoDBCrudPolicy:
-            TableName: { "Ref" : "OrderTable" }
+            TableName: { "Ref": "OrderTable" }
       Events:
         CreateOrderEvent:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -46,10 +46,24 @@ Resources:
       Handler: com.zeero.lambda.apis.ReadOrderAgent::handleRequest
       Policies:
         - DynamoDBReadPolicy:
-            TableName: { "Ref" : "OrderTable" }
+            TableName: { "Ref": "OrderTable" }
       Events:
         ReadeOrderEvent:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /orders
             Method: GET
+
+Outputs:
+  OrderAPI:
+    Description: "API Gateway endpoint for Create Order lambda"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/Orders"
+  CreateOrderAgent:
+    Description: "Create Order Lambda ARN"
+    Value: !GetAtt CreateOrderFunction.Arn
+  CreateOrderAgentIAMRole:
+    Description: "Create Order Lambda IAM Role ARN"
+    Value: { "Fn::GetAtt": "CreateOrderFunctionRole.Arn" }
+  ReadOrderAgent:
+    Description: "Create Order Lambda ARN"
+    Value: { "Fn::GetAtt": "ReadOrderFunction.Arn" }
