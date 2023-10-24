@@ -10,23 +10,63 @@ Globals:
   Function:
     Timeout: 20
     MemorySize: 512
+    Runtime: java17
+    Environment:
+      Variables:
+        #        ORDER_TABLE: !Ref OrderTable
+        ORDER_TABLE: { "Ref": "OrderTable" }
+    Architectures:
+      - x86_64
 
 Resources:
+  OrderTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: Number
   CreateOrderFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: CreateOrderFunction
+      CodeUri: lambda-order-apis
       Handler: com.zeero.lambda.apis.CreateOrderAgent::handleRequest
-      Runtime: java17
-      Architectures:
-        - x86_64
-      MemorySize: 512
-      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
-        Variables:
-          PARAM1: VALUE
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: { "Ref": "OrderTable" }
       Events:
-        HelloWorld:
+        CreateOrderEvent:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /hello
-            Method: get
+            Path: /orders
+            Method: POSt
+  ReadOrderFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: lambda-order-apis
+      Handler: com.zeero.lambda.apis.ReadOrderAgent::handleRequest
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: { "Ref": "OrderTable" }
+      Events:
+        ReadeOrderEvent:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /orders
+            Method: GET
+
+Outputs:
+  OrderAPI:
+    Description: "API Gateway endpoint for Create Order lambda"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/Orders"
+  CreateOrderAgent:
+    Description: "Create Order Lambda ARN"
+    Value: !GetAtt CreateOrderFunction.Arn
+  CreateOrderAgentIAMRole:
+    Description: "Create Order Lambda IAM Role ARN"
+    Value: { "Fn::GetAtt": "CreateOrderFunctionRole.Arn" }
+  ReadOrderAgent:
+    Description: "Read Order Lambda ARN"
+    Value: { "Fn::GetAtt": "ReadOrderFunction.Arn" }
+  ReadOrderAgentIAMRole:
+    Description: "Read Order Lambda IAM Role ARN"
+    Value: { "Fn::GetAtt": "ReadOrderFunctionRole.Arn" }

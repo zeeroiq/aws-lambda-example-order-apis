@@ -1,14 +1,11 @@
 {
-    "body": "{\"message\": \"hello world\"}",
+    "body": "{\n    \"id\": 123,\n    \"itemName\": \"Sample Item\",\n    \"quantity\": 5\n}",
     "resource": "/{proxy+}",
-    "path": "/path/to/resource",
+    "path": "/order",
     "httpMethod": "POST",
     "isBase64Encoded": false,
-    "queryStringParameters": {
-      "foo": "bar"
-    },
     "pathParameters": {
-      "proxy": "/path/to/resource"
+      "proxy": "/order"
     },
     "stageVariables": {
       "baz": "qux"
@@ -53,7 +50,7 @@
         "userAgent": "Custom User Agent String",
         "user": null
       },
-      "path": "/prod/path/to/resource",
+      "path": "/prod/order",
       "resourcePath": "/{proxy+}",
       "httpMethod": "POST",
       "apiId": "1234567890",
