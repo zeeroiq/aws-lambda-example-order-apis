@@ -65,5 +65,8 @@ Outputs:
     Description: "Create Order Lambda IAM Role ARN"
     Value: { "Fn::GetAtt": "CreateOrderFunctionRole.Arn" }
   ReadOrderAgent:
-    Description: "Create Order Lambda ARN"
+    Description: "Read Order Lambda ARN"
     Value: { "Fn::GetAtt": "ReadOrderFunction.Arn" }
+  ReadOrderAgentIAMRole:
+    Description: "Read Order Lambda IAM Role ARN"
+    Value: { "Fn::GetAtt": "ReadOrderFunctionRole.Arn" }
